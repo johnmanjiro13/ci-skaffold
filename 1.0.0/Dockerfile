@@ -5,7 +5,7 @@ ENV RELEASE_VERSION=2019-08-22
 ENV SKAFFOLD_VERSION=v1.0.0
 
 RUN : build dependencies \
-    && apk --update --no-cache add ca-certificates python3 git \
+    && apk --update --no-cache add ca-certificates python3 git docker \
     && apk --no-cache add --virtual build-dependencies curl openssl \
     && pip3 install --upgrade pip awscli \
     && : kubectl for eks \
