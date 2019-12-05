@@ -2,6 +2,7 @@ FROM alpine:latest
 
 ENV K8S_VERSION=1.14.6
 ENV RELEASE_VERSION=2019-08-22
+ENV KUSTOMIZE_VERSION=3.4.0
 ENV SKAFFOLD_VERSION=v1.0.0
 
 RUN : build dependencies \
@@ -15,7 +16,16 @@ RUN : build dependencies \
     && chmod +x ./kubectl \
     && mv ./kubectl /usr/local/bin/kubectl \
     && rm -rf kubectl.sha256 \
-    && : iam-authenticator \
+    && : install kustomize \
+    && curl -O -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv$KUSTOMIZEVER/kustomize_v${KUSTOMIZEVER}_linux_amd64.tar.gz \
+    && curl -O -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv$KUSTOMIZEVER/checksums.txt \
+    && openssl sha1 -sha256 kustomize_v${KUSTOMIZEVER}_linux_amd64.tar.gz \
+    && tar xzf kustomize_v${KUSTOMIZEVER}_linux_amd64.tar.gz \
+    && chmod +x ./kustomize \
+    && mv ./kustomize /usr/local/bin/kustomize \
+    && rm -rf kustomize_v${KUSTOMIZEVER}_linux_amd64.tar.gz \
+    && rm -rf checksums.txt \
+    && : install iam-authenticator \
     && curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/$K8S_VERSION/$RELEASE_VERSION/bin/linux/amd64/aws-iam-authenticator \
     && curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/$K8S_VERSION/$RELEASE_VERSION/bin/linux/amd64/aws-iam-authenticator.sha256 \
     && openssl sha1 -sha256 aws-iam-authenticator \
